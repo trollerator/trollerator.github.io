@@ -1,3 +1,20 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <path d="M42 110 Q38 85 45 65 Q55 38 90 35 Q125 32 138 62 Q148 80 142 108 Q148 120 140 130 Q132 142 115 148 Q95 155 72 148 Q52 142 42 128 Q36 118 42 110Z" fill="white" stroke="black" stroke-width="4"/>
+  <path d="M50 118 Q48 135 55 145 Q72 162 90 163 Q108 162 125 145 Q132 135 130 118" fill="white" stroke="black" stroke-width="4"/>
+  <ellipse cx="68" cy="88" rx="14" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="112" cy="88" rx="14" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="70" cy="89" rx="6" ry="5" fill="white"/>
+  <ellipse cx="114" cy="89" rx="6" ry="5" fill="white"/>
+  <path d="M48 118 Q60 140 90 143 Q120 140 132 118" fill="black" stroke="black" stroke-width="3"/>
+  <rect x="60" y="118" width="12" height="14" rx="2" fill="white"/>
+  <rect x="74" y="118" width="12" height="16" rx="2" fill="white"/>
+  <rect x="88" y="119" width="12" height="16" rx="2" fill="white"/>
+  <rect x="102" y="118" width="12" height="14" rx="2" fill="white"/>
+  <rect x="116" y="116" width="10" height="12" rx="2" fill="white"/>
+  <ellipse cx="90" cy="106" rx="7" ry="5" fill="#e0d0c0" stroke="black" stroke-width="2"/>
+  <line x1="52" y1="95" x2="62" y2="105" stroke="black" stroke-width="1.5" opacity="0.4"/>
+  <line x1="57" y1="92" x2="67" y2="102" stroke="black" stroke-width="1.5" opacity="0.4"/>
+  <line x1="118" y1="95" x2="128" y2="105" stroke="black" stroke-width="1.5" opacity="0.4"/>
+  <line x1="123" y1="92" x2="133" y2="102" stroke="black" stroke-width="1.5" opacity="0.4"/>
 </svg>

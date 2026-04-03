@@ -12,32 +12,39 @@ import { desc } from "drizzle-orm";
 const router = Router();
 const upload = multerFactory({ storage: memoryStorage() });
 
-const MEME_PROMPT = `Redraw the ENTIRE scene from this photo as a single cohesive hand-drawn cartoon sketch illustration. Every element — the background, body, clothing, accessories, and face — must be redrawn in cartoon style. The output must look like a cartoon comic panel, NOT a photo with anything pasted on top.
+const MEME_PROMPT = `Redraw EVERYTHING in this image as a single cohesive hand-drawn cartoon sketch illustration with a THICK BLACK OUTLINE style, similar to classic internet meme cartoon art. The ENTIRE image — subject, background, surroundings — must be redrawn from scratch as a cartoon. Do NOT use the original photo as a base.
 
-FACE — REDRAW IN TROLL FACE STYLE (do NOT paste a troll face image, DRAW the face from scratch):
-Illustrate the person's face using the "Troll Face" / Coolface meme aesthetic. This means DRAWING the face with these exaggerated cartoon features:
+CORE RULE — APPLY TROLL FACE TO THE MAIN SUBJECT:
+Whatever the subject is — a person, animal, plant, tree, bottle, pen, pencil, or any other object — give it a TROLL FACE (Coolface meme). The Troll Face must be DRAWN onto the subject, not pasted:
 - Face outline: bumpy, lumpy, wildly asymmetric hand-drawn shape — irregular edges, not a smooth oval
 - Mouth: enormous wide grin spanning the entire lower half of the face, teeth large and uneven, drawn with thick black lines
 - Chin/jaw: exaggerated, jutting forward, very wide at the bottom — wider than the top of the head
-- Eyes: sunken into deep dark scribbled eye sockets; the eyes themselves are small and smug
+- Eyes: sunken into deep dark scribbled eye sockets; small and smug
 - Expression: devious, smug, "problem?" energy — the classic troll smirk
-- The face is DRAWN, not composited — it is part of the same sketch as the rest of the image
+- The face is drawn as part of the subject itself (e.g., on the face of a dog, on the trunk of a tree, on the body of a bottle)
 - Use crosshatch shading and thick black outlines consistent with the rest of the cartoon
 
-ACCESSORIES — redraw all in cartoon style:
-- Headphones/earphones: draw as cartoon headphones sitting on the troll-face head
-- Glasses: draw as cartoon glasses on the face
-- Hats/caps: draw in cartoon style on top of the head
-- Microphones, props: draw as cartoon objects
-- Text/logos on clothing (e.g. brand names, letters): keep them legible, drawn in the cartoon
+SUBJECT TYPE RULES:
+- PERSON: redraw the full person as a cartoon character, face replaced with Troll Face drawn in the same art style
+- ANIMAL (dog, cat, bird, etc.): redraw the animal as an anime/cartoon character, apply Troll Face to where its face is, keep animal body features (ears, fur, tail) in cartoon style
+- PLANT / TREE / FLOWER: redraw as a cartoon plant with a Troll Face drawn on the trunk or main body, anime style with big expressive presence
+- OBJECT (bottle, pen, pencil, phone, cup, etc.): redraw as a cartoon character version of that object, give it a Troll Face drawn on its front surface, add cartoon arms/legs if it helps sell the personality
+- ANY OTHER SUBJECT: identify the main subject and apply the same Troll Face treatment — redraw from scratch, give it the troll face
 
-CLOTHING: same colors as original (black shirt stays black, etc.), drawn with thick cartoon outlines and flat colors
+STYLE:
+- Overall look: hand-drawn cartoon comic panel, anime influence, black-and-white with possible light fills
+- Thick black outlines throughout
+- Crosshatch or flat shading — no photorealistic gradients
+- The Troll Face style is consistent with the rest of the image (same line weight, same texture)
 
-BODY & POSE: same pose and composition as the photo, drawn as a cartoon character
+ACCESSORIES & CLOTHING (if present):
+- Headphones, glasses, hats: draw as cartoon accessories on/around the troll face
+- Clothing: same colors as original, drawn with cartoon outlines
+- Text/logos on clothing: keep legible, hand-drawn style
 
-BACKGROUND: simplified cartoon version of the original background — same general scene, sketched style
+BACKGROUND: simplified cartoon version of the original scene — same general environment, sketched style, no photorealistic elements
 
-OUTPUT: One unified cartoon illustration. Thick black outlines throughout. Flat or lightly cross-hatched fills. No photorealistic parts whatsoever. The face is drawn, not pasted.`;
+OUTPUT: One unified cartoon illustration. Everything drawn, nothing composited. The Troll Face is always present on the main subject.`;
 
 router.post("/transform", upload.single("image"), async (req, res) => {
   if (!req.file) {
@@ -50,8 +57,8 @@ router.post("/transform", upload.single("image"), async (req, res) => {
 
   try {
     const resizedBuffer = await sharp(req.file.buffer)
-      .resize(512, 512, { fit: "inside", withoutEnlargement: true })
-      .png({ quality: 80 })
+      .resize(1024, 1024, { fit: "inside", withoutEnlargement: true })
+      .png({ compressionLevel: 6 })
       .toBuffer();
 
     fs.writeFileSync(tmpFile, resizedBuffer);
@@ -59,7 +66,6 @@ router.post("/transform", upload.single("image"), async (req, res) => {
     const imageBuffer = await editImages([tmpFile], MEME_PROMPT, undefined, "auto");
     const b64 = imageBuffer.toString("base64");
 
-    // Persist to DB
     const [saved] = await db.insert(trollerations).values({
       imageData: b64,
       mimeType: "image/png",
